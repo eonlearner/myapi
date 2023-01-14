@@ -5,9 +5,11 @@ from deta import Deta
 import schemas
 import models
 import database
+from typing import Union
 from models import Cards, Products, Flags, CustServit, ProductLaunch
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
+from pydantic import BaseModel
 
 from database import SessionLocal, engine
 
@@ -19,6 +21,8 @@ def get_database_session():
         yield db
     finally:
         db.close()
+
+
 
 
 app = FastAPI()
@@ -84,20 +88,20 @@ async def read_productlaunch(pl_id: int, db: Session = Depends(get_database_sess
 
 #To Post/Create New Data
 @app.post("/cards")
-async def create_cards(c_id: int, c_name: str, c_invest: int, c_desc: str, selected: bool, unselected: bool, db: Session = Depends(get_database_session)):
-    cards = Cards(c_id=c_id, c_name=c_name, c_invest=c_invest, c_desc=c_desc, selected=selected, unselected=unselected)
+async def create_cards(c_id: int, c_name: str, c_invest: int, c_desc: str, selected: bool, db: Session = Depends(get_database_session)):
+    cards = Cards(c_id=c_id, c_name=c_name, c_invest=c_invest, c_desc=c_desc, selected=selected)
     db.add(cards)
     db.commit()
 
 @app.post("/products")
-async def create_products(p_id: int, p_name: str, p_invest: int, p_desc: str, selected: bool, unselected: bool, db: Session = Depends(get_database_session)):
-    products = Products(p_id=p_id, p_name=p_name, p_invest=p_invest, p_desc=p_desc, selected=selected, unselected=unselected)
+async def create_products(p_id: int, p_name: str, p_invest: int, p_desc: str, selected: bool, db: Session = Depends(get_database_session)):
+    products = Products(p_id=p_id, p_name=p_name, p_invest=p_invest, p_desc=p_desc, selected=selected)
     db.add(products)
     db.commit()
 
 @app.post("/flags")
-async def create_flags(f_id: int, f_name: str, f_invest: int, f_desc: str, db: Session = Depends(get_database_session)):
-    flags = Flags(f_id=f_id, f_name=f_name, f_invest=f_invest, f_desc=f_desc)
+async def create_flags(f_id: int, f_name: str, f_invest: int, f_desc: str, selected: bool, db: Session = Depends(get_database_session)):
+    flags = Flags(f_id=f_id, f_name=f_name, f_invest=f_invest, f_desc=f_desc, selected=selected)
     db.add(flags)
     db.commit()
 
@@ -146,20 +150,10 @@ async def delete_productlaunch(pl_id: int, db: Session = Depends(get_database_se
     db.delete(productlaunch)
     db.commit()
 
-####################### Update By Id #################
+####################### Update data By Id #################
 
 #To update The data by id
 @app.patch("/cards/{c_id}")
-async def update_cards(request: Request, c_id: int, db: Session = Depends(get_database_session)):
-    requestBody = await request.json()
-    cards = db.query(Cards).get(c_id)
-    cards.name = requestBody['name']
-    cards.desc = requestBody['desc']
-    db.commit()
-    db.refresh(cards)
-    newCards = jsonable_encoder(cards)
-    return JSONResponse(status_code=200, content={
-        "status_code": 200,
-        "message": "success",
-        "movie": newCards
-    })
+async def update_cards(c_id: int, db: Session = Depends(get_database_session)):
+  json_compatible_cards_data = jsonable_encoder(Cards)
+  game_db[c_id] = json_compatible_cards_data

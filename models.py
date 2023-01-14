@@ -13,7 +13,6 @@ class Cards(Base):
     c_invest = Column(Integer)
     c_desc = Column(Text())
     selected = Column(Boolean, default=False)
-    unselected = Column(Boolean, default=True)
     
 class Products(Base):
     __tablename__ = "Products"
@@ -22,7 +21,6 @@ class Products(Base):
     p_invest = Column(Integer)
     p_desc = Column(Text())
     selected = Column(Boolean, default=False)
-    unselected = Column(Boolean, default=True)
 
 
 class Flags(Base):
@@ -32,7 +30,6 @@ class Flags(Base):
     f_invest = Column(Integer)
     f_desc = Column(Text())
     selected = Column(Boolean, default=False)
-    unselected = Column(Boolean, default=True)
 
 class CustServit(Base):
     __tablename__ = "CustServit"

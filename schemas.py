@@ -10,7 +10,6 @@ class Cards(BaseModel):
     c_desc: Union[str, None] = Field(
         default=None, title="The Strategy Idea of the Cards ", max_length=700)
     selected: bool = False
-    unselected: bool = True
 
 class Products(BaseModel):
     p_id: int
@@ -19,7 +18,6 @@ class Products(BaseModel):
     p_desc: Union[str, None] = Field(
         default=None, title="The Products related to Strategy Cards", max_length=700)
     selected: bool = False
-    unselected: bool = True
 
 class Flags(BaseModel):
     f_id: int
@@ -28,7 +26,6 @@ class Flags(BaseModel):
     f_desc: Union[str, None] = Field(
         default=None, title="The Flags Investment in Store, Agent, and Online ", max_length=700)
     selected: bool = False
-    unselected: bool = False
 
 class CustServit(BaseModel):
     ci_id: int
