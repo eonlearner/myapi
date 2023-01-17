@@ -1,7 +1,6 @@
 from fastapi import FastAPI, Depends, Request, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import JSON
-from deta import Deta
 import schemas
 import models
 import database
@@ -26,8 +25,7 @@ def get_database_session():
 
 
 app = FastAPI()
-deta = Deta("d04aiohk_uDhQVAAU1LAKyX7XVCunyfCNvjqQRVGV")
-project = deta.Drive("myapi")
+
 
 ################ View Only ##################
 # To view All Data
