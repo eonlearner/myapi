@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, Request, HTTPException
+from fastapi import FastAPI, Depends, Request, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import JSON
 from deta import Deta
@@ -153,7 +153,12 @@ async def delete_productlaunch(pl_id: int, db: Session = Depends(get_database_se
 ####################### Update data By Id #################
 
 #To update The data by id
-@app.patch("/cards/{c_id}")
-async def update_cards(c_id: int, db: Session = Depends(get_database_session)):
-  json_compatible_cards_data = jsonable_encoder(Cards)
-  game_db[c_id] = json_compatible_cards_data
+@app.put("/cards/{c_id}")
+async def cards(c_id: int, request:schemas.Cards, db:Session=Depends(get_database_session)):
+    cards = db.query(models.Cards).filter(models.Cards.c_id == c_id)
+    if not Cards.c_id:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f'old_account with the id {c_id} is not available')
+    cards = db.query(Cards.c_id == c_id)
+    db.add(cards)
+    db.commit()
+    return {"code":"success","message":"card updated successfully"}
