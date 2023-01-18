@@ -151,12 +151,19 @@ async def delete_productlaunch(pl_id: int, db: Session = Depends(get_database_se
 ####################### Update data By Id #################
 
 #To update The data by id
-@app.put("/cards/{c_id}")
-async def cards(c_id: int, request:schemas.Cards, db:Session=Depends(get_database_session)):
-    cards = db.query(models.Cards).filter(models.Cards.c_id == c_id)
-    if not Cards.c_id:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f'old_account with the id {c_id} is not available')
-    cards = db.query(Cards.c_id == c_id)
-    db.add(cards)
+@app.patch("/cards/{c_id}")
+async def update_cards(request: Request, c_id: int, db: Session = Depends(get_database_session)):
+    requestBody = await request.json()
+    cards = db.query(Cards).get(c_id)
+    cards.c_name = requestBody['c_name']
+    cards.c_invest = requestBody['c_invest']
+    cards.c_desc = requestBody['c_desc']
+    cards.selected = requestBody['selected']
     db.commit()
-    return {"code":"success","message":"card updated successfully"}
+    db.refresh(cards)
+    newCards = jsonable_encoder(cards)
+    return JSONResponse(status_code=200, content={
+        "status_code": 200,
+        "message": "success",
+        "cards": newCards
+    })
